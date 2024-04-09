@@ -1,0 +1,27 @@
+{
+  "name": "passendo/astesting",
+  "description": "Testing AS php 8.3",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": "^8.3",
+    "aerospike/aerospike-php": "^1"
+  }
+  ,
+  "require-dev": {
+    "roave/security-advisories": "dev-latest"
+  },
+  "autoload": {
+    "psr-4": {
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+    }
+  },
+  "config": {
+    "optimize-autoloader": true
+  },
+  "scripts": {
+  }
+}

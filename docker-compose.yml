@@ -1,0 +1,36 @@
+# @format
+
+version: '1.0'
+services:
+  php-astesting:
+    container_name: php-astesting
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - '8071:9003'
+    networks:
+      - php-network
+
+  aerospike:
+    image: aerospike/aerospike-server:7.0
+    container_name: aerospike-700
+    ports:
+      - "3000-3003:3000-3003"
+    environment:
+      - AEROSPIKE_SERVICE_THREADS=4
+      - AEROSPIKE_TRANSACTION_QUEUES=4
+      - AEROSPIKE_TRANSACTION_THREADS_PER_QUEUE=4
+      - AEROSPIKE_LOGFILE=/dev/null
+    volumes:
+      - ./docker/aerospike:/opt/aerospike/etc
+    command: [ asd, --config-file, /opt/aerospike/etc/docker.conf ]
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    networks:
+      - php-network
+
+networks:
+  php-network:
+    external: true
