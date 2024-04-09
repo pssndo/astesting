@@ -1,10 +1,11 @@
 # @format
 
-version: '1.0'
+version: '3.4'
 services:
   php-astesting:
     container_name: php-astesting
     build:
+      context: .
       dockerfile: ./Dockerfile
     ports:
       - '8071:9003'
@@ -33,4 +34,4 @@ services:
 
 networks:
   php-network:
-    external: true
+    external: false
