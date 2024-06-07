@@ -5,7 +5,7 @@
   "license": "proprietary",
   "require": {
     "php": "^8.3",
-    "aerospike/aerospike-php": "^1"
+    "aerospike/aerospike-php": "v1.0.2"
   }
   ,
   "require-dev": {

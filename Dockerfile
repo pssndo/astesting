@@ -46,7 +46,21 @@ COPY . /var/www/astesting
 
 RUN composer install --no-scripts --ansi --no-interaction && composer dump-autoload
 
-COPY ./docker/aerospike/aerospike.so /usr/local/lib/php/extensions/no-debug-non-zts-20230831/aerospike.so
+# Install Rust and Cargo using rustup
+# The `-y` flag automatically installs the stable toolchain
+RUN curl --proto '=https' -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Add Cargo to the PATH
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+WORKDIR /var/www/astesting/vendor/aerospike/aerospike-php/aerospike-connection-manager
+
+RUN sed -i 's/host = "127.0.0.1:3000"/host = "aerospike:3000"/g' asld.toml
+
+WORKDIR /var/www/astesting/vendor/aerospike/aerospike-php
+RUN cargo clean && cargo build --release
+
+RUN cp /var/www/astesting/vendor/aerospike/aerospike-php/target/release/libaerospike_php.so /usr/local/lib/php/extensions/no-debug-non-zts-20230831/aerospike.so
 RUN echo "extension=aerospike.so" > /usr/local/etc/php/conf.d/aerospike.ini
 RUN chmod 644 /usr/local/lib/php/extensions/no-debug-non-zts-20230831/aerospike.so
 
@@ -63,10 +77,6 @@ ENV PATH $PATH:$GOPATH/bin
 
 # Create the directory for GOPATH
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
-
-WORKDIR /var/www/astesting/vendor/aerospike/aerospike-php/aerospike-connection-manager
-
-RUN sed -i 's/host = "127.0.0.1:3000"/host = "aerospike:3000"/g' asld.toml
 
 WORKDIR /var/www/astesting
 
